@@ -21,7 +21,8 @@
 #define CLIENT_ADDR "192.168.0.8"
 #define DEVICE_NAME "eth0"
 
-unsigned short csum(unsigned short *iph, int ip_size);
+unsigned short csum(unsigned short *iph);
+
 int main()
 {
   struct sockaddr_ll server_addr, client_addr;
@@ -75,7 +76,7 @@ int main()
   ip_header->protocol =  IPPROTO_UDP; // UDP
   ip_header->daddr    = inet_addr(SERVER_ADDR);
   ip_header->saddr    = inet_addr(CLIENT_ADDR);
-  ip_header->check    = csum((unsigned short *) ip_header, ip_header->ihl * 4); //htons(0xcdfa);
+  ip_header->check    = csum((unsigned short *) ip_header); //htons(0xcdfa);
 
   udp_header->source  = htons(CLIENT_PORT); //порт клиента
   udp_header->dest    = htons(SERVER_PORT);
@@ -126,7 +127,7 @@ int main()
   return 0;
 }
 
-unsigned short csum(unsigned short *iph, int ip_size)
+unsigned short csum(unsigned short *iph)
 {
   int sum = 0;
   unsigned short *tmp = iph;
